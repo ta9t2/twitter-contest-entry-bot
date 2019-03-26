@@ -1,0 +1,7 @@
+# Output files
+bot.log
+*.csv
+
+# Temporally files
+_memo/
+_secret_*

@@ -1,0 +1,65 @@
+{
+    "consumer_key": "specify your consumer API key",
+    "consumer_secret": "specify your consumer API secret key",
+    "access_token": "specify your access token",
+    "access_token_secret": "specify your access token secret",
+    "timezone": 9,
+    "interval_time": 180,
+    "entry_contest": {
+        "entry_keywords2d": [
+            [
+                "RT",
+                "RETWEET",
+                "Retweet",
+                "retweet",
+                "リツイート",
+                "ﾘﾂｲｰﾄ"
+            ],
+            [
+                "FOLLOW",
+                "Follow",
+                "follow",
+                "フォロー",
+                "ﾌｫﾛｰ"
+            ]
+        ],
+        "collect_tweets": {
+            "timeline": {
+                "is_enable": false,
+                "count": 30
+            },
+            "list": {
+                "is_enable": false,
+                "count": 30,
+                "screen_name": "specify the screen name of the owner of the list",
+                "slug": "specify the slug name or numerical ID of the list"
+            },
+            "search": {
+                "is_enable": true,
+                "count": 30,
+                "search_queries": [
+                    "プレゼント",
+                    "ﾌﾟﾚｾﾞﾝﾄ",
+                    "キャンペーン",
+                    "ｷｬﾝﾍﾟｰﾝ",
+                    "懸賞"
+                ],
+                "lang": "ja"
+            }
+        },
+        "ignore_users": [
+            "specify the ignore user_id or sreen_name",
+            "",
+            ""
+        ]
+    },
+    "destroy_friendship": {
+        "destroy_list_filename": "destroy_list.csv",
+        "destroy_count": 20,
+        "ignore_users": [
+            "specify the ignore user_id or sreen_name",
+            "",
+            ""
+        ]
+    }
+}
