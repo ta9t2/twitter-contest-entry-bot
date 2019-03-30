@@ -48,10 +48,16 @@ Added destroy list: destroy_list.csv
 
 ## Usage / 使い方
 
-### 全自動の応募＆アンフォロー - `Looper.sh`
+### 全自動の応募＆アンフォロー - `Looper.sh`, `Looper_win.bat`
 
+bash:
 ```Bash:e.g. Bash on Ubuntu
 bash Looper.sh
+```
+
+Windows:
+```Bash:e.g. Bash on Ubuntu
+Looper_win.bat
 ```
 
 このスクリプトは `EntryBot.py` (=応募=リツイート＆フォロー) と `UnfollowBot.py` (=アンフォロー) を繰り返し実行します。出力ファイルは `result_files` ディレクトリに移動されてマージされます。フォロー上限近くになるまではアンフォローは必要ないと思いますので、 `config.json` の `destroy_count` 項目の値を調整するか、 `UnfollowBot.py` の実行をコメントアウトします。

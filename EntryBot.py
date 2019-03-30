@@ -27,7 +27,7 @@ def log(level, text):
     levmes = '[ERROR]' if level == 'e' else '[INFO]'
     logmes = ''.join(str(text).splitlines())
     print(logmes)
-    with open('bot.log', mode='a') as f:
+    with open('bot.log', mode='a', encoding="utf-8_sig") as f:
         f.write(timemes + levmes + logmes + '\n')
 
 
@@ -218,7 +218,7 @@ def write_results(results, filename):
     for result in results:
         rows.append(convert_result_dic_to_list(result))
 
-    with open(filename, 'w') as f:
+    with open(filename, mode='w', encoding="utf-8_sig") as f:
         writer = csv.writer(f, delimiter=',', quotechar='"',
                             lineterminator='\n', quoting=csv.QUOTE_ALL)
         writer.writerows(header + rows)
@@ -237,7 +237,7 @@ def add_destroy_list(results, filename, result_filename):
                     row += [follow['name']]
                     rows.append(row)
 
-    with open(filename, 'a') as f:
+    with open(filename, mode='a', encoding="utf-8_sig") as f:
         writer = csv.writer(f, delimiter=',', quotechar='"',
                             lineterminator='\n', quoting=csv.QUOTE_ALL)
         writer.writerows(rows)
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     output_filename = 'result_EntryBot_' + start_time + '.csv'
 
     # Load configurations from the JSON file.
-    with open('config.json') as f:
+    with open('config.json', mode='r', encoding="utf-8_sig") as f:
         cf = json.load(f)
     CONSUMER_KEY = cf['consumer_key']
     CONSUMER_SECRET = cf['consumer_secret']
