@@ -1,10 +1,10 @@
 chcp 65001
 
 :loop
-    python EntryBot_enc.py
+    python EntryBot.py
     timeout /T 7200 /NOBREAK
 
-    python UnfollowBot_enc.py
+    python UnfollowBot.py
     timeout /T 7200 /NOBREAK
 
     mkdir output_files
