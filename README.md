@@ -48,10 +48,16 @@ Output file - `result_EntryBot_YYYYMMDD_HHMMSS.csv` :
 
 ## Usage
 
-### Fully automatic entry & unfollowing - `Looper.sh`
+### Fully automatic entry & unfollowing - `Looper.sh`, `Looper_win.bat`
 
+bash:
 ```Bash:e.g. Bash on Ubuntu
 bash Looper.sh
+```
+
+Windows:
+```Bash:e.g. Bash on Ubuntu
+Looper_win.bat
 ```
 
 This script repeat to execute `EntryBot.py`(=entry contests) and `UnfollowBot.py`(=delete friendships). Output files are moved to the `result_files` directory and merged. It probably is not necessary to delete friendships until the following limit is coming, so adjust the value `destroy_count` on `config.json` or comment out `UnfollowBot.py`.

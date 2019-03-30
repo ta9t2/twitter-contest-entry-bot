@@ -25,7 +25,7 @@ def log(level, text):
     levmes = '[ERROR]' if level == 'e' else '[INFO]'
     logmes = ''.join(str(text).splitlines())
     print(logmes)
-    with open('bot.log', mode='a') as f:
+    with open('bot.log', mode='a', encoding="utf-8_sig") as f:
         f.write(timemes + levmes + logmes + '\n')
 
 
@@ -117,7 +117,7 @@ def write_results(results, filename):
     for result in results:
         rows.append(convert_result_dic_to_list(result))
 
-    with open(filename, 'w') as f:
+    with open(filename, mode='w', encoding="utf-8_sig") as f:
         writer = csv.writer(f, delimiter=',', quotechar='"',
                             lineterminator='\n', quoting=csv.QUOTE_ALL)
         writer.writerows(header + rows)
@@ -131,7 +131,7 @@ def update_destroy_list(destroy_list_scr, results, filename):
                 if result['user_id'] == destroy_friend[1]:
                     del destroy_list[index]
 
-    with open(filename, 'w') as f:
+    with open(filename, mode='w', encoding="utf-8_sig") as f:
         writer = csv.writer(f, delimiter=',', quotechar='"',
                             lineterminator='\n', quoting=csv.QUOTE_ALL)
         writer.writerows(destroy_list)
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     output_filename = 'result_UnfollowBot_' + start_time + '.csv'
 
     # Load configurations from the JSON file.
-    with open('config.json') as f:
+    with open('config.json', mode='r', encoding="utf-8_sig") as f:
         cf = json.load(f)
     CONSUMER_KEY = cf['consumer_key']
     CONSUMER_SECRET = cf['consumer_secret']
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     IGNORE_USERS = cf['destroy_friendship']['ignore_users']
 
     # Load unfollow-list
-    with open(DESTROY_LIST_FILENAME, 'r') as f:
+    with open(DESTROY_LIST_FILENAME, mode='r', encoding="utf-8_sig") as f:
         reader = csv.reader(f)
         destroy_list = [row for row in reader]
 
