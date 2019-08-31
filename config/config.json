@@ -4,8 +4,10 @@
     "access_token": "specify your access token",
     "access_token_secret": "specify your access token secret",
     "timezone": 9,
-    "interval_time": 180,
+    "interval_time": 10,
+    "result_dir": "result",
     "entry_contest": {
+        "contest_list_filename": "config/contest_list.csv",
         "entry_keywords2d": [
             [
                 "RT",
@@ -25,18 +27,18 @@
         ],
         "collect_tweets": {
             "timeline": {
-                "is_enable": false,
-                "count": 30
+                "is_enable": true,
+                "count": 10
             },
             "list": {
                 "is_enable": false,
-                "count": 30,
+                "count": 10,
                 "screen_name": "specify the screen name of the owner of the list",
                 "slug": "specify the slug name or numerical ID of the list"
             },
             "search": {
                 "is_enable": true,
-                "count": 30,
+                "count": 10,
                 "search_queries": [
                     "プレゼント",
                     "ﾌﾟﾚｾﾞﾝﾄ",
@@ -48,18 +50,25 @@
             }
         },
         "ignore_users": [
-            "specify the ignore user_id or sreen_name",
+            "specify the ignore user_id or the sreen_name",
             "",
             ""
         ]
     },
     "destroy_friendship": {
-        "destroy_list_filename": "destroy_list.csv",
-        "destroy_count": 20,
+        "destroy_list_filename": "config/friend_list.csv",
+        "destroy_count": 10,
         "ignore_users": [
-            "specify the ignore user_id or sreen_name",
+            "specify the ignore user_id or the sreen_name",
             "",
             ""
         ]
+    },
+    "sum": {
+        "count": 20,
+        "last_timestamp_filename": "config/sum_last_timestamp.txt",
+        "mailto": "mailto address",
+        "gmail_addr": "your gmail address(@gmail.com)",
+        "gmail_pw": "your gmail password"
     }
 }
