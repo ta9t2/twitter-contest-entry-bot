@@ -3,7 +3,6 @@
 
 # This bot is for automatically to destroy your all friendships.
 
-import csv
 import os
 import time
 
@@ -11,17 +10,6 @@ import tweepy
 
 import tb_common as tbc
 import tb_unfollow
-
-
-def is_yes():
-    yes = ['yes', 'y', 'ye']
-    no = ['no', 'n']
-    while True:
-        choice = input("Please respond with 'yes' or 'no': ").lower().strip()
-        if choice in yes:
-            return True
-        elif choice in no:
-            return False
 
 
 if __name__ == '__main__':
@@ -32,7 +20,7 @@ if __name__ == '__main__':
     CONFIG = tbc.load_config()
 
     # Set result file name
-    result_filename = '{result_dir}/unfollow_all_{datetime}.csv'.format(
+    result_filename = '{result_dir}/destroy_all_friendship_{datetime}.csv'.format(
         result_dir=CONFIG['result_dir'], datetime=tbc.get_timenow())
 
     # Initialize the API
@@ -43,10 +31,10 @@ if __name__ == '__main__':
     friends_before = len(api.friends_ids(api.me().screen_name))
 
     # Confirm if you want to continue
-    mes = 'Continuing will be unfollowed all your friends on Twitter. To complete will take {complete_time} secs(={friend_cnt} friends * {interval_time} secs interval time). Are you sure you want to continue?'.format(
+    mes = 'Continuing will be unfollowed all of your friends on Twitter. To complete will take {complete_time} secs(={friend_cnt} friends * {interval_time} secs interval time). Are you sure you want to continue?'.format(
         complete_time=(friends_before * CONFIG['interval_time']), friend_cnt=friends_before, interval_time=CONFIG['interval_time'])
     tbc.log('i', mes=mes)
-    if not is_yes():
+    if not tbc.is_yes():
         tbc.log('i', mes='Stop to destroy your friendship.')
         os._exit(1)
     tbc.log('i', mes='Destroy your friendship between you and all.')

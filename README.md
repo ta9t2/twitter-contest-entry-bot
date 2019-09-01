@@ -5,97 +5,145 @@ This bot is for automatically to enter(=retweet and follow) contests on Twitter.
 ## Description
 
 - Automatically enter(=retweet and follow) contests if tweets collected from your timeline, a user's list of timeline or search results for specific keywords are including specific contest keywords.
-- Unfollow using the FIFO so as not to exceed the Twitter following limit. There is also a script to delete your all friendships at once.
+- Unfollow using the FIFO so as not to exceed the Twitter following limit. There is also a script to delete all of your friendships at once.
 - Execution results are output to CSV files.
+- There is also a tool of emailing summarized direct messages.
 
 NOTE: By bulk retweeting, following or unfollowing behavior, your Twitter account may be suspended by Twitter. You need to adjust interval time and count of entry. Use at your own risk.
 
 ## Demo
 
-The result of executed `EntryBot.py`:
+### Collect contest tweets
 
-```Bash:bot.log
-$ python3 EntryBot.py
-START EntryBot.py
----------- [1] ----------------------------------------
-tweet-url: https://twitter.com/screen_name/status/xxxxxxxxxxxxxx
-tweet-text: aaaaa aaaaa Retweet! Follow @abcdef and @ghi! You could win aaaaa aaaaa
-retweet: Successfully retweeted
-follow: Abc Def(@abcdef) -> Successfully followed
-follow: Ghi Jk(@ghi) -> Already followed
-time.sleep(180)
----------- [2] ----------------------------------------
-tweet-url: https://twitter.com/screen_name/status/xxxxxxxxxxxxxx
-tweet-text: aaaaa aaaaa Retweet! Follow @abcdef and @ghi! You could win aaaaa 
-retweet: Successfully retweeted
-follow: Abc Def(@abcdef) -> Successfully followed
-follow: Ghi Jk(@ghi) -> Already followed
-time.sleep(180)
+The result of executed `tb_search_contests.py`:
+
+```Bash:tb_search_contests.py.log
+$ python3 tb_search_contests.py
+START SCRIPT
+Stored the contest tweet: url=https://twitter.com/screen_name_aaa/status/tweet_id_111, tweet.text=aaaaa aaaaa Retweet! Follow @abcdef and @ghi! You could win aaaaa aaaaa
+Since the tweet is not a contest, skipped: url=https://twitter.com/screen_name_bbb/status/tweet_id_222, tweet.text=test test test
+Stored the contest tweet: url=https://twitter.com/screen_name_ccc/status/tweet_id_333, tweet.text=ccccc ccccc RT! FOLLOW @ghijkl! You could win aaaaa aaaaa
+Stored the contest tweet: url=https://twitter.com/screen_name_ddd/status/tweet_id_444, tweet.text=ddddd ddddd Retweet! Follow @mnopqr! You could win aaaaa aaaaa
 
 ...
 
-DONE! See the "result_EntryBot_YYYYMMDD_HHMMSS.csv" file.
-Friends: 770 -> 772
-Successfully retweeted: 2
-Added destroy list: destroy_list.csv
+Wrote the contest tweet list: filename=config/contest_list.csv.
+DONE
 ```
 
-Output file - `result_EntryBot_YYYYMMDD_HHMMSS.csv` :
+Output file of the collected contest tweet list - `config/contest_list.csv` :
 
-![result_EntryBot_1](https://user-images.githubusercontent.com/48476117/54944974-12b48100-4f78-11e9-82e0-897332a5c069.png)
+![contest_list.csv](https://user-images.githubusercontent.com/48476117/64070857-8ab17080-cca7-11e9-98a0-95fba6b070c1.png)
 
-![result_EntryBot_2](https://user-images.githubusercontent.com/48476117/54944991-1942f880-4f78-11e9-8b22-ccb9942a91ff.png)
+### Enter contests
+
+The result of executed `tb_enter_contests.py`:
+
+```Bash:tb_enter_contests.log
+$ python3 tb_enter_contests.py
+START SCRIPT
+---------- [1] ----------------------------------------
+tweet_url: https://twitter.com/screen_name_aaa/status/tweet_id_111
+retweet: Successfully retweeted
+follow: ABC(@abcdef/111111) -> Successfully followed
+follow: GHI(@ghi/222222) -> Successfully followed
+Waiting: time.sleep(180)
+---------- [2] ----------------------------------------
+tweet_url: https://twitter.com/screen_name_ccc/status/tweet_id_333
+retweet: Successfully retweeted
+follow: GL(@ghijkl/333333) -> Successfully followed
+Waiting: time.sleep(180)
+---------- [3] ----------------------------------------
+tweet_url: https://twitter.com/screen_name_ddd/status/tweet_id_444
+retweet: Successfully retweeted
+follow: MNO(@mnopqr/222222) -> Successfully followed
+follow: DD(@dddddd/444444) -> Already followed
+Waiting: time.sleep(180)
+
+...
+
+Successfully retweeted: 3
+Friends: 100 -> 104
+Cleared the contest list: filename=config/contest_list.csv
+DONE
+```
+
+Output file of the result of contest entry - `result/entry_YYYYMMDD_HHMMSS.csv` :
+
+![entry_YYYYMMDD_HHMMSS.csv](https://user-images.githubusercontent.com/48476117/64070990-dade0200-ccaa-11e9-9c9b-89e4c673871a.png)
 
 ## Usage
 
-### Fully automatic entry & unfollowing - `Looper.sh`, `Looper_win.bat`
+### Fully automatic entry & unfollowing - `bot_entry.sh`, `bot_entry_win.bat`
 
 bash:
 ```Bash:e.g. Bash on Ubuntu
-bash Looper.sh
+bash bot_entry.sh
 ```
 
 Windows:
-```Bash:e.g. Bash on Ubuntu
-Looper_win.bat
+```Bash:e.g. Windows
+bot_entry_win.bat
 ```
 
-This script repeat to execute `EntryBot.py`(=entry contests) and `UnfollowBot.py`(=delete friendships). Output files are moved to the `result_files` directory and merged. It probably is not necessary to delete friendships until the following limit is coming, so adjust the value `destroy_count` on `config.json` or comment out `UnfollowBot.py`.
+This script repeat to execute `tb_search_contests.py`(=collecting contests), `tb_enter_contests.py`(=entry contests) and `tb_unfollow.py`(=delete friendships). Result files are saved in `result` directory. It probably is not necessary to delete friendships until the following limit is coming, so adjust the value `destroy_count` on `config/config.json` or comment out `tb_unfollow.py`.
 
 Please refer to the following when you execute separately:
 
-### Entry - `EntryBot.py`
+### Search contests - `tb_search_contests.py`
 
 ```Bash:e.g. Bash on Ubuntu
-python3 EntryBot.py
+python3 tb_search_contests.py
 ```
 
-This script enters(=retweet and follow) contests if tweets collected from your timeline, a user's list of timeline or search results for specific keywords are including specific contest keywords. If tweet text including screen names(=r'@[a-z|A-Z|0-9|_]{1,15}'), follow those users. Followed friends list is written out on `destroy_list.csv` file for to delete friendships by `UnfollowBot.py`.
+This script searches contests if tweets collected from your timeline, a user's list of timeline or search results for specific keywords are including specific contest keywords.
 
-- Input files - `config.json`
-- Output files - `result_EntryBot_{YYYYMMDD}_{HHMMSS}.csv`, `destroy_list.csv`
+- Input files - `config/config.json`
+- Output files - `config/contest_list.csv`
 
-### Delete several friendships - `UnfollowBot.py`
+### Entry - `tb_enter_contests.py`
 
 ```Bash:e.g. Bash on Ubuntu
-python3 UnfollowBot.py
+python3 tb_enter_contests.py
 ```
 
-This script deletes(=unfollow) friendships in order by oldness according to `destroy_list.csv` that was made by `EntryBot.py`. You can specify the number of friends to delete your friendships at once is in `destroy_count` on `config.json`.
+This script enters(=retweet and follow) contests that are in `config/contest_list.csv`. If tweet text including screen names(=r'@[a-z|A-Z|0-9|_]{1,15}'), follow those users. Followed friends list is written out on `config/friend_list.csv` file for to delete friendships by `tb_unfollow.py`.
 
-- Input files - `config.json`, `destroy_list.csv`
-- Output files - `result_UnfollowBot_{YYYYMMDD}_{HHMMSS}.csv`, `destroy_list.csv`
+- Input files - `config/config.json`, `config/contest_list.csv`
+- Output files - `result/entry_{YYYYMMDD}_{HHMMSS}.csv`, `config/friend_list.csv`
 
-### Delete all friendships - `DestroyAllFriendshipsBot.py`
+### Delete several friendships - `tb_unfollow.py`
 
 ```Bash:e.g. Bash on Ubuntu
-python3 DestroyAllFriendshipsBot.py
+python3 tb_unfollow.py
 ```
 
-This script deletes(=unfollow) your all friendships at once without reflecting `ignore_users`.
+This script deletes(=unfollow) friendships in order by oldness according to `config/friend_list.csv` that was made by `tb_enter_contests.py`. You can specify the number of friends to delete your friendships at once is in `destroy_count` on `config/config.json`.
 
-- Input files - `config.json`
-- Output files - `result_DestroyAllFriendshipsBot_{YYYYMMDD}_{HHMMSS}.csv`
+- Input files - `config/config.json`, `config/friend_list.csv`
+- Output files - `result/unfollow_{YYYYMMDD}_{HHMMSS}.csv`, `config/friend_list.csv`
+
+### Delete all friendships - `tb_destroy_all_friendship.py`
+
+```Bash:e.g. Bash on Ubuntu
+python3 tb_destroy_all_friendship.py
+```
+
+This script deletes(=unfollow) all of your friendships at once without reflecting `ignore_users`.
+
+- Input files - `config/config.json`
+- Output files - `result/destroy_all_friendship_{YYYYMMDD}_{HHMMSS}.csv`
+
+### Email summarized direct messages - `tb_summarize_dms.py`
+
+```Bash:e.g. Bash on Ubuntu
+python3 tb_summarize_dms.py
+```
+
+This script summarizes your direct messages and email.
+
+- Input files - `config/config.json`
+- Output files - `result/sumdms_{YYYYMMDD}_{HHMMSS}.csv`
 
 ## Requirements
 
@@ -112,7 +160,7 @@ pip3 install tweepy
 
 ## Configuration
 
-Open up `config.json` and make below values. These scripts work if you configure the values correspond to your Twitter API credentials, but the default values are for Japanese users.
+Open up `config/config.json` and make below values. These scripts work if you configure the values correspond to your Twitter API credentials, but the default values are for Japanese users.
 
 ### Common configs
 
@@ -124,12 +172,20 @@ Open up `config.json` and make below values. These scripts work if you configure
   "access_token": "specify your access token",
   "access_token_secret": "specify your access token secret",
 ```
+
 #### Your local time zone
 
 ```JSON:config.json
   "timezone": 9,
 ```
 e.g. JST -> `9`, EST -> `-5`
+
+#### Directory of result files
+
+```JSON:config.json
+  "result_dir": "result",
+```
+Results files are saved the directory.
 
 #### Interval time(sec) between entries or between unfollowings
 
@@ -138,6 +194,14 @@ e.g. JST -> `9`, EST -> `-5`
 ```
 
 ### Entry configs
+
+#### Contest list filename
+
+```JSON:config.json
+    "contest_list_filename": "config/contest_list.csv",
+```
+
+Searched and collected contests are saved the file by `tb_search_contests.py`. `tb_enter_contests.py` uses the file for to enter contests.
 
 #### Entry keywords
 
@@ -230,7 +294,7 @@ If a tweeted user or tweet text are including specified ignore users, it does no
 #### File name of to unfollow list
 
 ```JSON:config.json
-    "destroy_list_filename": "destroy_list.csv",
+    "destroy_list_filename": "config/friend_list.csv",
 ```
 
 #### Number of friends to delete your friendships at once
@@ -250,6 +314,35 @@ If a tweeted user or tweet text are including specified ignore users, it does no
 ```
 
 Specified ignore users are not to do unfollow.
+
+### Summarization direct messages configs
+
+#### Number of direct messages to email at once
+
+```JSON:config.json
+  "sum": {
+      "count": 20,
+```
+
+#### Filename stored last timestamp of direct message
+
+```JSON:config.json
+      "last_timestamp_filename": "config/sum_last_timestamp.txt",
+```
+
+Get the latest timestamp from direct messages and store the file when do mail. When do mail next time, get the last timestamp from the file and collect direct messages newer than the timestamp.
+
+#### Email
+
+```JSON:config.json
+      "mailto": "mailto address",
+      "gmail_addr": "your gmail address(@gmail.com)",
+      "gmail_pw": "your gmail password"
+```
+
+- `mailto` - Specify a destination email address.
+- `gmail_addr` - Specify a sender email address. It is your gmail account.
+- `gmail_pw` - Specify a password of `gmail_addr`.
 
 ## License
 

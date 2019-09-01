@@ -77,6 +77,10 @@ if __name__ == '__main__':
         tbc.log('e', mes=e, func=str(
             sys._getframe().f_code.co_name), hdlg=tbc.CONTD)
 
+    # Set result file name
+    result_filename = '{result_dir}/sumdms_{datetime}.txt'.format(
+        result_dir=CONFIG['result_dir'], datetime=tbc.get_timenow())
+
     # Initialize API
     api = tbc.get_api(CONFIG['consumer_key'], CONFIG['consumer_secret'],
                       CONFIG['access_token'], CONFIG['access_token_secret'])
@@ -105,8 +109,6 @@ if __name__ == '__main__':
         latest_timestamp=latest_timestamp, fn=CONFIG['sum']['last_timestamp_filename']))
 
     # Write result
-    result_filename = '{result_dir}/sumdms_{datetime}.txt'.format(
-        result_dir=CONFIG['result_dir'], datetime=tbc.get_timenow())
     result = ''
     result += 'latest_timestamp: {lt}\n'.format(lt=latest_timestamp)
     result += 'mail_subject: {ms}\n'.format(ms=subject)

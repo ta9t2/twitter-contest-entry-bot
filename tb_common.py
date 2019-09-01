@@ -41,8 +41,13 @@ def log_init():
 
 def log(level, mes='', func='', hdlg=CONTD):
     # level='e':error, 'i' or others:info
-    text = '{mes}, func={func}, hdlg={hdlg}'.format(
-        mes=mes, func=func, hdlg=hdlg)
+
+    # text = '{mes}, func={func}, hdlg={hdlg}'.format(mes=mes, func=func, hdlg=hdlg)
+    text = '{mes}'.format(mes=mes)
+    if not func == '':
+        text += ', func={func}'.format(func=func)
+    if not hdlg == CONTD:
+        text += ', hdlg={hdlg}'.format(func=hdlg)
 
     # Print log
     print(text)
@@ -180,6 +185,17 @@ def is_ignore(user_ids, ignore_user_ids):
                 id=user_id), func=str(sys._getframe().f_code.co_name), hdlg=CONTD)
             return True
     return False
+
+
+def is_yes():
+    yes = ['yes', 'y', 'ye']
+    no = ['no', 'n']
+    while True:
+        choice = input("Please respond with 'yes' or 'no': ").lower().strip()
+        if choice in yes:
+            return True
+        elif choice in no:
+            return False
 
 
 def twp_get_api(consumer_key, consumer_secret, access_token, access_token_secret):

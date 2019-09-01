@@ -7,95 +7,132 @@
 - あなたのタイムライン、あるユーザのリストのタイムライン、または特定キーワードでの検索結果からツイートを集めて、それらに特定の懸賞ワードが含まれていれば、自動的に応募(=リツイート＆フォロー)します。
 - ツイッターのフォロー上限を超えないようにFIFOでアンフォロー(=フォロー解除)します。すべてのフレンドを一括アンフォローするスクリプトもあります。
 - 実行結果はCSVファイルに出力されます。
+- ダイレクトメッセージをサマライズしてメールするツールもあります。
 
 注: 大量のリツイート、フォロー、アンフォローによってあなたのツイッターアカウントが凍結される可能性があります。インターバルタイムや応募数を調整する必要があります。自己責任で使ってください。
 
 ## Demo / デモ
 
-`EntryBot.py`の実行結果:
+### 懸賞ツイートの収集
 
-```Bash:bot.log
-$ python3 EntryBot.py
-START EntryBot.py
----------- [1] ----------------------------------------
-tweet-url: https://twitter.com/screen_name/status/xxxxxxxxxxxxxx
-tweet-text: aaaaa aaaaa Retweet! Follow @abcdef and @ghi! You could win aaaaa aaaaa
-retweet: Successfully retweeted
-follow: Abc Def(@abcdef) -> Successfully followed
-follow: Ghi Jk(@ghi) -> Already followed
-time.sleep(180)
----------- [2] ----------------------------------------
-tweet-url: https://twitter.com/screen_name/status/xxxxxxxxxxxxxx
-tweet-text: aaaaa aaaaa Retweet! Follow @abcdef and @ghi! You could win aaaaa 
-retweet: Successfully retweeted
-follow: Abc Def(@abcdef) -> Successfully followed
-follow: Ghi Jk(@ghi) -> Already followed
-time.sleep(180)
+`tb_search_contests.py`の実行結果:
+
+```Bash:tb_search_contests.py.log
+$ python3 tb_search_contests.py
+START SCRIPT
+Stored the contest tweet: url=https://twitter.com/screen_name_aaa/status/tweet_id_111, tweet.text=aaaaa aaaaa Retweet! Follow @abcdef and @ghi! You could win aaaaa aaaaa
+Since the tweet is not a contest, skipped: url=https://twitter.com/screen_name_bbb/status/tweet_id_222, tweet.text=test test test
+Stored the contest tweet: url=https://twitter.com/screen_name_ccc/status/tweet_id_333, tweet.text=ccccc ccccc RT! FOLLOW @ghijkl! You could win aaaaa aaaaa
+Stored the contest tweet: url=https://twitter.com/screen_name_ddd/status/tweet_id_444, tweet.text=ddddd ddddd Retweet! Follow @mnopqr! You could win aaaaa aaaaa
 
 ...
 
-DONE! See the "result_EntryBot_YYYYMMDD_HHMMSS.csv" file.
-Friends: 770 -> 772
-Successfully retweeted: 2
-Added destroy list: destroy_list.csv
+Wrote the contest tweet list: filename=config/contest_list.csv.
+DONE
 ```
 
-出力ファイル - `result_EntryBot_YYYYMMDD_HHMMSS.csv` :
+Output file of the collected contest tweet list - `config/contest_list.csv` :
 
-![result_EntryBot_1](https://user-images.githubusercontent.com/48476117/54944974-12b48100-4f78-11e9-82e0-897332a5c069.png)
+![contest_list.csv](https://user-images.githubusercontent.com/48476117/64070857-8ab17080-cca7-11e9-98a0-95fba6b070c1.png)
 
-![result_EntryBot_2](https://user-images.githubusercontent.com/48476117/54944991-1942f880-4f78-11e9-8b22-ccb9942a91ff.png)
+### 懸賞応募
+
+`tb_enter_contests.py`の実行結果:
+
+```Bash:tb_enter_contests.log
+$ python3 tb_enter_contests.py
+START SCRIPT
+---------- [1] ----------------------------------------
+tweet_url: https://twitter.com/screen_name_aaa/status/tweet_id_111
+retweet: Successfully retweeted
+follow: ABC(@abcdef/111111) -> Successfully followed
+follow: GHI(@ghi/222222) -> Successfully followed
+Waiting: time.sleep(180)
+---------- [2] ----------------------------------------
+tweet_url: https://twitter.com/screen_name_ccc/status/tweet_id_333
+retweet: Successfully retweeted
+follow: GL(@ghijkl/333333) -> Successfully followed
+Waiting: time.sleep(180)
+---------- [3] ----------------------------------------
+tweet_url: https://twitter.com/screen_name_ddd/status/tweet_id_444
+retweet: Successfully retweeted
+follow: MNO(@mnopqr/222222) -> Successfully followed
+follow: DD(@dddddd/444444) -> Already followed
+Waiting: time.sleep(180)
+
+...
+
+Successfully retweeted: 3
+Friends: 100 -> 104
+Cleared the contest list: filename=config/contest_list.csv
+DONE
+```
+
+Output file of the result of contest entry - `result/entry_YYYYMMDD_HHMMSS.csv` :
+
+![entry_YYYYMMDD_HHMMSS.csv](https://user-images.githubusercontent.com/48476117/64070990-dade0200-ccaa-11e9-9c9b-89e4c673871a.png)
 
 ## Usage / 使い方
 
-### 全自動の応募＆アンフォロー - `Looper.sh`, `Looper_win.bat`
+### 全自動の応募＆アンフォロー - `bot_entry.sh`, `bot_entry_win.bat`
 
 bash:
 ```Bash:e.g. Bash on Ubuntu
-bash Looper.sh
+bash bot_entry.sh
 ```
 
 Windows:
-```Bash:e.g. Bash on Ubuntu
-Looper_win.bat
+```Bash:e.g. Windows
+bot_entry_win.ba
 ```
 
-このスクリプトは `EntryBot.py` (=応募=リツイート＆フォロー) と `UnfollowBot.py` (=アンフォロー) を繰り返し実行します。出力ファイルは `result_files` ディレクトリに移動されてマージされます。フォロー上限近くになるまではアンフォローは必要ないと思いますので、 `config.json` の `destroy_count` 項目の値を調整するか、 `UnfollowBot.py` の実行をコメントアウトします。
+このスクリプトは `tb_search_contests.py` (=懸賞ツイートの収集)、 `tb_enter_contests.py` (=応募=リツイート＆フォロー) と `tb_unfollow.py` (=アンフォロー) を繰り返し実行します。出力ファイルは `result` ディレクトリに移動されてマージされます。フォロー上限近くになるまではアンフォローは必要ないと思いますので、 `config/config.json` の `destroy_count` 項目の値を調整するか、 `tb_unfollow.py` の実行をコメントアウトします。
 
 個別に実行する場合は以下を参照してください。
 
-### 応募 - `EntryBot.py`
+### 懸賞ツイートの収集 - `tb_search_contests.py`
 
 ```Bash:e.g. Bash on Ubuntu
-python3 EntryBot.py
+python3 tb_search_contests.py
 ```
 
-このスクリプトは、あなたのタイムライン、あるユーザのリストのタイムライン、または特定キーワードでの検索結果からツイートを集めて、それらに特定の懸賞ワードが含まれていれば、応募(=リツイート＆フォロー)します。ツイート内容にスクリーンネーム(=r'@[a-z|A-Z|0-9|_]{1,15}'=@マークから始まるユーザ名)が含まれていれば、そのユーザもフォローします。フォローされたユーザのリストは `UnfollowBot.py` でアンフォローするために `destroy_list.csv` ファイルに出力されます。
+このスクリプトは、あなたのタイムライン、あるユーザのリストのタイムライン、または特定キーワードでの検索結果からツイートを集めて、それらに特定の懸賞ワードが含まれていれば懸賞ツイートリストとして保存します。
 
-- Input files - `config.json`
-- Output files - `result_EntryBot_{YYYYMMDD}_{HHMMSS}.csv`, `destroy_list.csv`
+- Input files - `config/config.json`
+- Output files - `config/contest_list.csv`
 
-### アンフォロー - `UnfollowBot.py`
+### 応募 - `tb_enter_contests.py`
 
 ```Bash:e.g. Bash on Ubuntu
-python3 UnfollowBot.py
+python3 tb_enter_contests.py
 ```
 
-このスクリプトは `EntryBot.py` で作られた `destroy_list.csv` に従って、古い順にフレンドをアンフォロー(=フォロー解除)します。一度にアンフォローするユーザ数は `config.json` の `destroy_count` で指定できます。
+このスクリプトは`config/contest_list.csv`の懸賞に応募(=リツイート＆フォロー)します。ツイート内容にスクリーンネーム(=r'@[a-z|A-Z|0-9|_]{1,15}'=@マークから始まるユーザ名)が含まれていれば、そのユーザもフォローします。フォローされたユーザのリストは `tb_unfollow.py` でアンフォローするために `config/friend_list.csv` ファイルに出力されます。
 
-- Input files - `config.json`, `destroy_list.csv`
-- Output files - `result_UnfollowBot_{YYYYMMDD}_{HHMMSS}.csv`, `destroy_list.csv`
+- Input files - `config/config.json`, `config/contest_list.csv`
+- Output files - `result/entry_{YYYYMMDD}_{HHMMSS}.csv`, `config/friend_list.csv`
 
-### 全フレンドのアンフォロー - `DestroyAllFriendshipsBot.py`
+### アンフォロー - `tb_unfollow.py`
 
 ```Bash:e.g. Bash on Ubuntu
-python3 DestroyAllFriendshipsBot.py
+python3 tb_unfollow.py
+```
+
+このスクリプトは `tb_enter_contests.py` で作られた `config/friend_list.csv` に従って、古い順にフレンドをアンフォロー(=フォロー解除)します。一度にアンフォローするユーザ数は `config/config.json` の `destroy_count` で指定できます。
+
+- Input files - `config/config.json`, `config/friend_list.csv`
+- Output files - `result/unfollow_{YYYYMMDD}_{HHMMSS}.csv`, `config/friend_list.csv`
+
+### 全フレンドのアンフォロー - `tb_destroy_all_friendship.py`
+
+```Bash:e.g. Bash on Ubuntu
+python3 tb_destroy_all_friendship.py
 ```
 
 このスクリプトは `ignore_users` の設定を反映せずにすべてのフレンドを一括アンフォロー(=フォロー解除)します。
 
-- Input files - `config.json`
-- Output files - `result_DestroyAllFriendshipsBot_{YYYYMMDD}_{HHMMSS}.csv`
+- Input files - `config/config.json`
+- Output files - `result/destroy_all_friendship_{YYYYMMDD}_{HHMMSS}.csv`
 
 ## Requirements / 動作条件
 
@@ -112,7 +149,7 @@ pip3 install tweepy
 
 ## Configuration / 設定方法
 
-`config.json` を開いて下記の項目を設定してください。これらのスクリプトはツイッターのAPI認証情報を設定すれば動きますが、初期値は日本ユーザ向けです。
+`config/config.json` を開いて下記の項目を設定してください。これらのスクリプトはツイッターのAPI認証情報を設定すれば動きますが、初期値は日本ユーザ向けです。
 
 ### 共通設定
 
@@ -131,6 +168,13 @@ pip3 install tweepy
 ```
 e.g. JST -> `9`, EST -> `-5`
 
+#### 結果ファイルのディレクトリ
+
+```JSON:config.json
+  "result_dir": "result",
+```
+結果ファイルはこのディレクトリに保存されます。
+
 #### 応募間隔やアンフォロー間隔のインターバルタイム(秒)
 
 ```JSON:config.json
@@ -138,6 +182,14 @@ e.g. JST -> `9`, EST -> `-5`
 ```
 
 ### 応募(=リツイート＆フォロー)の設定
+
+#### 懸賞ツーとリストのファイル名
+
+```JSON:config.json
+    "contest_list_filename": "config/contest_list.csv",
+```
+
+`tb_search_contests.py`で検索、収集された懸賞ツーとがこのファイルに保存されます。`tb_enter_contests.py`から利用して懸賞に応募します。
 
 #### 応募のキーワード
 
@@ -230,7 +282,7 @@ e.g. JST -> `9`, EST -> `-5`
 #### アンフォローリストのファイル名
 
 ```JSON:config.json
-    "destroy_list_filename": "destroy_list.csv",
+    "destroy_list_filename": "config/destroy_list.csv",
 ```
 
 #### 一度にアンフォローするフレンド数
@@ -250,6 +302,35 @@ e.g. JST -> `9`, EST -> `-5`
 ```
 
 アンフォローしない無視ユーザを指定します。
+
+### ダイレクトメッセージサマライズの設定
+
+#### 一度にサマライズするダイレクトメッセージの数
+
+```JSON:config.json
+  "sum": {
+      "count": 20,
+```
+
+#### 最後のタイムスタンプを格納するファイル名
+
+```JSON:config.json
+      "last_timestamp_filename": "config/sum_last_timestamp.txt",
+```
+
+メール送信時にダイレクトメッセージから最新のタイムスタンプを取得して保存します。次回のメール送信時はそのファイルからタイムスタンプを取得してそれよりも新しいダイレクトメッセージを取得します。
+
+#### Eメール
+
+```JSON:config.json
+      "mailto": "mailto address",
+      "gmail_addr": "your gmail address(@gmail.com)",
+      "gmail_pw": "your gmail password"
+```
+
+- `mailto` - 宛先アドレスを設定します。
+- `gmail_addr` - 送信者アドレスを設定します。あなたのgmailアカウントです。
+- `gmail_pw` - `gmail_addr`のパスワードを設定します。
 
 ## License / ライセンス
 
