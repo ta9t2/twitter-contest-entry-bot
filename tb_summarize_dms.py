@@ -5,6 +5,7 @@
 
 import datetime
 import sys
+import time
 
 import tb_common as tbc
 
@@ -27,6 +28,12 @@ def summarize_direct_messages(api, direct_messages, last_timestamp, timezone):
                 'text': direct_message['message_create']['message_data']['text']
             }
             sum_dms.append(sum_dm)
+
+            # Wait a few minutes to keep not to ban my account
+            tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+                it=CONFIG['interval_time']))
+            time.sleep(CONFIG['interval_time'])
+
     return sum_dms
 
 

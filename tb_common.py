@@ -77,8 +77,11 @@ def load_config(filename='config/config.json'):
 
 
 def get_api(consumer_key, consumer_secret, access_token, access_token_secret):
-    api = OAuth1Session(consumer_key, consumer_secret,
-                        access_token, access_token_secret)
+    try:
+        api = OAuth1Session(consumer_key, consumer_secret,
+                            access_token, access_token_secret)
+    except Exception as e:
+        log('e', mes=e, func=str(sys._getframe().f_code.co_name), hdlg=ABORT)
     return api
 
 
@@ -199,10 +202,13 @@ def is_yes():
 
 
 def twp_get_api(consumer_key, consumer_secret, access_token, access_token_secret):
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    api = tweepy.API(auth, wait_on_rate_limit=True,
-                     wait_on_rate_limit_notify=True)
+    try:
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth, wait_on_rate_limit=True,
+                         wait_on_rate_limit_notify=True)
+    except Exception as e:
+        log('e', mes=e, func=str(sys._getframe().f_code.co_name), hdlg=ABORT)
     return api
 
 
@@ -216,28 +222,35 @@ def twp_convert_screen_names_to_user_ids(api, screen_names):
     return user_ids
 
 
+def twp_follow_user_id(api, user_id):
+    # Follow(Create friendship with a new user)
+    result_follow = dict()
+    screen_name = ''
+    name = ''
+    try:
+        friendship = api.show_friendship(
+            source_id=api.me().id, target_id=user_id)
+        screen_name = api.get_user(user_id).screen_name
+        name = api.get_user(user_id).name
+
+        if friendship[0].following:
+            result_follow = dict(user_id=user_id, screen_name=screen_name,
+                                 name=name, is_followed=False, comment='Already followed')
+        else:
+            api.create_friendship(user_id)
+            result_follow = dict(user_id=user_id, screen_name=screen_name,
+                                 name=name, is_followed=True, comment='Successfully followed')
+    except tweepy.error.TweepError as e:
+        result_follow = dict(user_id=user_id, screen_name=screen_name,
+                             name=name, is_followed=False, comment=e.reason)
+    return result_follow
+
+
 def twp_follow_user_ids(api, user_ids):
     # Follow(Create friendship with new users)
     result_follows = list()
     for user_id in user_ids:
-        screen_name = ''
-        name = ''
-        try:
-            friendship = api.show_friendship(
-                source_id=api.me().id, target_id=user_id)
-            screen_name = api.get_user(user_id).screen_name
-            name = api.get_user(user_id).name
-
-            if friendship[0].following:
-                result_follows.append(
-                    dict(user_id=user_id, screen_name=screen_name, name=name, is_followed=False, comment='Already followed'))
-            else:
-                api.create_friendship(user_id)
-                result_follows.append(
-                    dict(user_id=user_id, screen_name=screen_name, name=name, is_followed=True, comment='Successfully followed'))
-        except tweepy.error.TweepError as e:
-            result_follows.append(
-                dict(user_id=user_id, screen_name=screen_name, name=name, is_followed=False, comment=e.reason))
+        result_follows.append(twp_follow_user_id(api, user_id))
     return result_follows
 
 
@@ -254,19 +267,26 @@ def twp_retweet_tweet_id(api, tweet_id):
     return result_retweet
 
 
+def twp_unfollow_user_id(api, user_id):
+    # Destory friendship with a user
+    result_destroy = dict()
+    screen_name = ''
+    name = ''
+    try:
+        api.destroy_friendship(user_id)
+        screen_name = api.get_user(user_id).screen_name
+        name = api.get_user(user_id).name
+        result_destroy = dict(user_id=user_id, screen_name=screen_name,
+                              name=name, is_destroyed=True, comment='Successfully unfollowed')
+    except tweepy.error.TweepError as e:
+        result_destroy = dict(user_id=user_id, screen_name=screen_name,
+                              name=name, is_destroyed=False, comment=e.reason)
+    return result_destroy
+
+
 def twp_unfollow_user_ids(api, user_ids):
     # Destory friendship
     result_destroys = list()
     for user_id in user_ids:
-        screen_name = ''
-        name = ''
-        try:
-            api.destroy_friendship(user_id)
-            screen_name = api.get_user(user_id).screen_name
-            name = api.get_user(user_id).name
-            result_destroys.append(dict(user_id=user_id, screen_name=screen_name,
-                                        name=name, is_destroyed=True, comment='Successfully unfollowed'))
-        except tweepy.error.TweepError as e:
-            result_destroys.append(dict(
-                user_id=user_id, screen_name=screen_name, name=name, is_destroyed=False, comment=e.reason))
+        result_destroys.append(twp_unfollow_user_id(api, user_id))
     return result_destroys

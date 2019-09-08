@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
         # whether or not a contest
         if not is_contest(tweet.text, CONFIG['entry_contest']['entry_keywords2d']):
-            tbc.log('i', mes='Since the tweet is not a contest, skipped: url={tweet_url}, tweet.text={text}'.format(
+            tbc.log('i', mes='Skipped, for the tweet is NOT a contest: url={tweet_url}, tweet.text={text}'.format(
                 tweet_url=tweet_url, text=tweet_text))
             continue
 
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
         # whether or not a icluding ignore list
         if tbc.is_ignore(user_ids, ignore_user_ids):
-            tbc.log('i', mes='Since the tweet is in ignore user(s), skipped: url={tweet_url}, tweet.text={text}'.format(
+            tbc.log('i', mes='Skipped, for the tweet is in ignore user(s): url={tweet_url}, tweet.text={text}'.format(
                 tweet_url=tweet_url, text=tweet_text))
             continue
 
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         contest['tweet_url'] = tweet_url
         contest['tweet_text'] = tweet_text
         contests.append(contest)
-        tbc.log('i', mes='Stored the contest tweet: url={tweet_url}, tweet.text={text}'.format(
+        tbc.log('i', mes='Stored the list, for the tweet is a contest: url={tweet_url}, tweet.text={text}'.format(
             tweet_url=tweet_url, text=tweet_text))
 
     # Write out the contest list on a CSV sheet

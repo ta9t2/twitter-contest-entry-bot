@@ -124,13 +124,13 @@ if __name__ == '__main__':
 
         # whether or not a icluding ignore list
         if tbc.is_ignore([friend['user_id']], ignore_user_ids):
-            tbc.log('i', mes='Since the user is a ignore user, skipped: user_id={user_id}, screen_name={screen_name}, name={name}'.format(
+            tbc.log('i', mes='Skipped, for the user is a ignore user: user_id={user_id}, screen_name={screen_name}, name={name}'.format(
                 user_id=friend['user_id'], screen_name=friend['screen_name'], name=friend['name']))
             continue
 
         # Unfollow
-        result['unfollows'] = tbc.twp_unfollow_user_ids(
-            api, [friend['user_id']])
+        result['unfollows'] = tbc.twp_unfollow_user_id(
+            api, friend['user_id'])
 
         # Print progress
         print_progress(index, result)

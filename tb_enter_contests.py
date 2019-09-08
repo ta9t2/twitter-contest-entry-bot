@@ -92,6 +92,11 @@ if __name__ == '__main__':
         tbc.log('e', mes=e, func=str(
             sys._getframe().f_code.co_name), hdlg=tbc.ABORT)
 
+    # if contest tweets are zero, exit
+    if len(contests) == 0:
+        tbc.log('i', mes='There are no contest tweets.', func=str(
+            sys._getframe().f_code.co_name), hdlg=tbc.ABORT)
+
     # Initialize the API
     api = tbc.twp_get_api(CONFIG['consumer_key'], CONFIG['consumer_secret'],
                           CONFIG['access_token'], CONFIG['access_token_secret'])
@@ -105,7 +110,16 @@ if __name__ == '__main__':
         result = dict()
 
         # Follow
-        result['follows'] = tbc.twp_follow_user_ids(api, contest['user_ids'])
+        result['follows'] = list()
+        for user_id in contest['user_ids']:
+            result_follow = tbc.twp_follow_user_id(api, user_id)
+            result['follows'].append(result_follow)
+
+            # Wait a few minutes to keep not to ban my account
+            if result_follow['is_followed']:
+                tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+                    it=CONFIG['interval_time']))
+                time.sleep(CONFIG['interval_time'])
 
         # Retweet
         result['retweet'] = tbc.twp_retweet_tweet_id(api, contest['tweet_id'])
