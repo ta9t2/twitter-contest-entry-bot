@@ -26,7 +26,7 @@ def print_progress(index, result):
     return
 
 
-def write_updated_friend_list(unfollows, filename):
+def write_updated_friend_list(unfollow, filename):
     # Load friend list
     friends = list()
     try:
@@ -45,12 +45,7 @@ def write_updated_friend_list(unfollows, filename):
     # Remove destroy friends from friend list
     updated_friendlist = list()
     for friend in friends:
-        is_to_leave = True
-        for unfollow in unfollows:
-            if friend['user_id'] == unfollow['user_id']:
-                is_to_leave = False
-                break
-        if is_to_leave:
+        if friend['user_id'] != unfollow['user_id']:
             updated_friendlist.append(friend)
 
     # Update friend list
@@ -129,7 +124,7 @@ if __name__ == '__main__':
             continue
 
         # Unfollow
-        result['unfollows'] = tbc.twp_unfollow_user_id(
+        result['unfollow'] = tbc.twp_unfollow_user_id(
             api, friend['user_id'])
 
         # Print progress
@@ -137,18 +132,16 @@ if __name__ == '__main__':
 
         # Update(Remove lines) destroy friend list
         write_updated_friend_list(
-            result['unfollows'], CONFIG['destroy_friendship']['destroy_list_filename'])
+            result['unfollow'], CONFIG['destroy_friendship']['destroy_list_filename'])
 
         # Write result
         write_result(result, result_filename)
 
         # Wait a few minutes to keep not to ban my account
-        for unfollow in result['unfollows']:
-            if unfollow['is_destroyed']:
-                tbc.log('i', mes='Waiting: time.sleep({it})'.format(
-                    it=CONFIG['interval_time']))
-                time.sleep(CONFIG['interval_time'])
-                break
+        if result['unfollow']['is_destroyed']:
+            tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+                it=CONFIG['interval_time']))
+            time.sleep(CONFIG['interval_time'])
 
     # Print & Count of my friends
     friends_after = len(api.friends_ids(api.me().screen_name))

@@ -66,7 +66,8 @@ def create_message(api, sum_dms):
 def get_latest_timestamp(direct_messages):
     timestamp = ''
     if len(direct_messages) != 0:
-        timestamp = direct_messages['events'][0]['created_timestamp']
+        if len(direct_messages['events']) != 0:
+            timestamp = direct_messages['events'][0]['created_timestamp']
     return timestamp
 
 
