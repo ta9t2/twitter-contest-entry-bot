@@ -30,7 +30,7 @@ def summarize_direct_messages(api, direct_messages, last_timestamp, timezone):
             sum_dms.append(sum_dm)
 
             # Wait a few minutes to keep not to ban my account
-            tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+            tbc.log('i', mes='Waiting: time.sleep({it}), users/show'.format(
                 it=CONFIG['interval_time']))
             time.sleep(CONFIG['interval_time'])
 

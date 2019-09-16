@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
             # Wait a few minutes to keep not to ban my account
             if result_follow['is_followed']:
-                tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+                tbc.log('i', mes='Waiting: time.sleep({it}), Follow'.format(
                     it=CONFIG['interval_time']))
                 time.sleep(CONFIG['interval_time'])
 
@@ -140,7 +140,7 @@ if __name__ == '__main__':
         retweet_cnt += 1 if result['retweet']['is_retweeted'] else 0
 
         # Wait a few minutes to keep not to ban my account
-        tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+        tbc.log('i', mes='Waiting: time.sleep({it}), Retweet'.format(
             it=CONFIG['interval_time']))
         time.sleep(CONFIG['interval_time'])
 

@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
         # Wait a few minutes to keep not to ban my account
         if result['unfollow']['is_destroyed']:
-            tbc.log('i', mes='Waiting: time.sleep({it})'.format(
+            tbc.log('i', mes='Waiting: time.sleep({it}), Unfollow'.format(
                 it=CONFIG['interval_time']))
             time.sleep(CONFIG['interval_time'])
 

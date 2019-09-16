@@ -3,9 +3,10 @@
 
 # This bot is for automatically to collec contests on Twitter
 
+import csv
 import re
 import sys
-import csv
+import time
 
 import tweepy
 
@@ -121,6 +122,11 @@ if __name__ == '__main__':
         contests.append(contest)
         tbc.log('i', mes='Stored the list, for the tweet is a contest: url={tweet_url}, tweet.text={text}'.format(
             tweet_url=tweet_url, text=tweet_text))
+                
+        # Wait a few minutes to keep not to ban my account
+        tbc.log('i', mes='Waiting: time.sleep({it}), get_user'.format(
+            it=CONFIG['interval_time']))
+        time.sleep(CONFIG['interval_time'])
 
     # Write out the contest list on a CSV sheet
     with open(CONFIG['entry_contest']['contest_list_filename'], mode='w', encoding='utf-8_sig') as f:
