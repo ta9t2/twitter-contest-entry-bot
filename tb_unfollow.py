@@ -16,11 +16,10 @@ def print_progress(index, result):
     mess = list()
     mess += ['---------- [{m1}] ----------------------------------------'.format(
         m1=(index + 1))]
-    for unfollow in result['unfollows']:
-        userstr = tbc.get_userstr(
-            user_id=unfollow['user_id'], screen_name=unfollow['screen_name'], name=unfollow['name'])
-        mess += ['unfollow: {m1} -> {m2}'.format(
-            m1=userstr, m2=unfollow['comment'])]
+    userstr = tbc.get_userstr(user_id=result['unfollow']['user_id'],
+                              screen_name=result['unfollow']['screen_name'], name=result['unfollow']['name'])
+    mess += ['unfollow: {m1} -> {m2}'.format(
+        m1=userstr, m2=result['unfollow']['comment'])]
     for mes in mess:
         tbc.log('i', mes=mes)
     return
@@ -64,13 +63,12 @@ def write_result(result, filename):
     with open(filename, mode='a', encoding="utf-8_sig") as f:
         writer = csv.writer(f, delimiter=',', quotechar='"',
                             lineterminator='\n', quoting=csv.QUOTE_ALL)
-        for unfollow in result['unfollows']:
-            row = list()
-            row += [tbc.get_userstr(unfollow['user_id'],
-                                    unfollow['screen_name'], unfollow['name'])]
-            row += [unfollow['is_destroyed']]
-            row += [unfollow['comment']]
-            writer.writerow(row)
+        row = list()
+        row += [tbc.get_userstr(result['unfollow']['user_id'],
+                                result['unfollow']['screen_name'], result['unfollow']['name'])]
+        row += [result['unfollow']['is_destroyed']]
+        row += [result['unfollow']['comment']]
+        writer.writerow(row)
     return
 
 
