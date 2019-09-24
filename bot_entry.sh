@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function countdown() {
-  secs=$((2 * 60 * 60))
+  secs=$((4 * 60 * 60))
   while [ $secs -gt 0 ]; do
     h=$(($secs / 3600))
     m=$(($secs % 3600 / 60))
@@ -17,15 +17,17 @@ while : ; do
   mkdir result
 
   python3 tb_search_contests.py
-  python3 tb_enter_contests.py
+  echo 'waiting...'
+  countdown
 
+  python3 tb_enter_contests.py
   echo 'waiting...'
   countdown
 
   python3 tb_unfollow.py
-
   echo 'waiting...'
   countdown
+
 done
 
 exit
