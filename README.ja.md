@@ -323,11 +323,15 @@ e.g. JST -> `9`, EST -> `-5`
 #### Eメール
 
 ```JSON:config.json
-      "mailto": "mailto address",
-      "gmail_addr": "your gmail address(@gmail.com)",
-      "gmail_pw": "your gmail password"
+      "email": {
+          "is_enable": true,
+          "mailto": "mailto address",
+          "gmail_addr": "your gmail address(@gmail.com)",
+          "gmail_pw": "your gmail password"
+      }
 ```
 
+- `is_enable` - `true` なら、以下の情報を使用してEmailを送信します。 `false` なら、サマライズしたダイレクトメッセージのファイルのみを作成します。
 - `mailto` - 宛先アドレスを設定します。
 - `gmail_addr` - 送信者アドレスを設定します。あなたのgmailアカウントです。
 - `gmail_pw` - `gmail_addr`のパスワードを設定します。

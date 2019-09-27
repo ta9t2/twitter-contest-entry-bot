@@ -67,8 +67,11 @@
     "sum": {
         "count": 20,
         "last_timestamp_filename": "config/sum_last_timestamp.txt",
-        "mailto": "mailto address",
-        "gmail_addr": "your gmail address(@gmail.com)",
-        "gmail_pw": "your gmail password"
+        "email": {
+            "is_enable": true,
+            "mailto": "mailto address",
+            "gmail_addr": "your gmail address(@gmail.com)",
+            "gmail_pw": "your gmail password"
+        }
     }
 }

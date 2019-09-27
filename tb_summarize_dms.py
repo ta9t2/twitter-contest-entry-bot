@@ -37,7 +37,7 @@ def summarize_direct_messages(api, direct_messages, last_timestamp, timezone):
     return sum_dms
 
 
-def create_message(api, sum_dms):
+def create_message(api, sum_dms, nowtime):
     # Get my screen_name
     my_screen_name = tbc.get_myinfo(api)['screen_name']
 
@@ -47,6 +47,8 @@ def create_message(api, sum_dms):
     # Make mail body
     body = ''
     border = '--------------------' + '\n'
+
+    body += 'As of ' + nowtime + ', ' + '\n'
     body += '@' + my_screen_name + "'s direct messages are as follows:" + '\n'
     body += border
     if len(sum_dms) == 0:
@@ -59,7 +61,7 @@ def create_message(api, sum_dms):
             body += 'sender: ' + sum_dm['sender_info'] + '\n'
             body += 'text: ' + sum_dm['text'] + '\n'
             body += border
-
+    body += '==============================' + '\n'
     return subject, body
 
 
@@ -93,6 +95,10 @@ if __name__ == '__main__':
     api = tbc.get_api(CONFIG['consumer_key'], CONFIG['consumer_secret'],
                       CONFIG['access_token'], CONFIG['access_token_secret'])
 
+    # Get now time
+    nowtime = (datetime.datetime.now(datetime.timezone(
+        datetime.timedelta(hours=CONFIG['timezone'])))).isoformat()
+
     # Get DMs
     dms = tbc.get_direct_messages(api, CONFIG['sum']['count'])
 
@@ -102,12 +108,18 @@ if __name__ == '__main__':
     for sum_dm in sum_dms:
         tbc.log('i', mes='Summarized DMs: sum_dm=' + str(sum_dm))
 
-    # Send mail
-    subject, body = create_message(api, sum_dms)
-    tbc.mail(subject, body, CONFIG['sum']['mailto'],
-             CONFIG['sum']['gmail_addr'], CONFIG['sum']['gmail_pw'])
-    tbc.log('i', mes='Mailed: mailto={mailto}, gmail={gmail}'.format(
-        mailto=CONFIG['sum']['mailto'], gmail=CONFIG['sum']['gmail_addr']))
+    # Create a message
+    subject, body = create_message(api, sum_dms, nowtime)
+    tbc.log('i', mes='Created a message for email')
+
+    # Email
+    EM = CONFIG['sum']['email']
+    if EM['is_enable']:
+        tbc.mail(subject, body, EM['mailto'], EM['gmail_addr'], EM['gmail_pw'])
+        tbc.log('i', mes='Mailed: mailto={mailto}, gmail={gmail}'.format(
+            mailto=EM['mailto'], gmail=EM['gmail_addr']))
+    else:
+        tbc.log('i', mes='Email was skipped.')
 
     # Update latest timestamp
     latest_timestamp = get_latest_timestamp(dms)

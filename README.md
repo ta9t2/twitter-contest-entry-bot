@@ -335,11 +335,15 @@ Get the latest timestamp from direct messages and store the file when do mail. W
 #### Email
 
 ```JSON:config.json
-      "mailto": "mailto address",
-      "gmail_addr": "your gmail address(@gmail.com)",
-      "gmail_pw": "your gmail password"
+      "email": {
+          "is_enable": true,
+          "mailto": "mailto address",
+          "gmail_addr": "your gmail address(@gmail.com)",
+          "gmail_pw": "your gmail password"
+      }
 ```
 
+- `is_enable` - If `true`, send to email using below info. If `false`, only create a file of summarized dms.
 - `mailto` - Specify a destination email address.
 - `gmail_addr` - Specify a sender email address. It is your gmail account.
 - `gmail_pw` - Specify a password of `gmail_addr`.
