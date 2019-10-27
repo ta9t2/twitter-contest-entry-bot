@@ -290,3 +290,7 @@ def twp_unfollow_user_ids(api, user_ids):
     for user_id in user_ids:
         result_destroys.append(twp_unfollow_user_id(api, user_id))
     return result_destroys
+
+
+def dict_to_str(dicdata):
+    return json.dumps(dicdata)
