@@ -12,7 +12,8 @@ import tb_common as tbc
 
 def summarize_direct_messages(api, direct_messages, last_timestamp, timezone):
     sum_dms = list()
-    if len(direct_messages) != 0:
+
+    if (len(direct_messages) != 0) and ('events' in direct_messages):
         # Summaraize DMs from the latest timestamp to the last timestamp
         for direct_message in direct_messages['events']:
             if direct_message['created_timestamp'] <= last_timestamp:
@@ -37,7 +38,7 @@ def summarize_direct_messages(api, direct_messages, last_timestamp, timezone):
     return sum_dms
 
 
-def create_message(api, sum_dms, nowtime):
+def create_message(api, sum_dms, nowtime, err):
     # Get my screen_name
     my_screen_name = tbc.get_myinfo(api)['screen_name']
 
@@ -50,6 +51,8 @@ def create_message(api, sum_dms, nowtime):
 
     body += 'As of ' + nowtime + ', ' + '\n'
     body += '@' + my_screen_name + "'s direct messages are as follows:" + '\n'
+    body += border
+    body += 'Errors: ' + err + '\n'
     body += border
     if len(sum_dms) == 0:
         body += 'N/A' + '\n'
@@ -67,7 +70,7 @@ def create_message(api, sum_dms, nowtime):
 
 def get_latest_timestamp(direct_messages):
     timestamp = ''
-    if len(direct_messages) != 0:
+    if (len(direct_messages) != 0) and ('events' in direct_messages):
         if len(direct_messages['events']) != 0:
             timestamp = direct_messages['events'][0]['created_timestamp']
     return timestamp
@@ -101,6 +104,7 @@ if __name__ == '__main__':
 
     # Get DMs
     dms = tbc.get_direct_messages(api, CONFIG['sum']['count'])
+    err = tbc.dict_to_str(dms) if 'errors' in dms else 'N/A'
 
     # Summaraize DMs
     sum_dms = summarize_direct_messages(
@@ -109,7 +113,7 @@ if __name__ == '__main__':
         tbc.log('i', mes='Summarized DMs: sum_dm=' + str(sum_dm))
 
     # Create a message
-    subject, body = create_message(api, sum_dms, nowtime)
+    subject, body = create_message(api, sum_dms, nowtime, err)
     tbc.log('i', mes='Created a message for email')
 
     # Email
