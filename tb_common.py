@@ -47,7 +47,7 @@ def log(level, mes='', func='', hdlg=CONTD):
     if not func == '':
         text += ', func={func}'.format(func=func)
     if not hdlg == CONTD:
-        text += ', hdlg={hdlg}'.format(func=hdlg)
+        text += ', hdlg={hdlg}'.format(hdlg=hdlg)
 
     # Print log
     print(text)
