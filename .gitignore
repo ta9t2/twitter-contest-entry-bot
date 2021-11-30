@@ -1,5 +1,6 @@
 # Add ignore files for this project
 .vscode/
+.history/
 _test/
 _sec_*
 *.log*

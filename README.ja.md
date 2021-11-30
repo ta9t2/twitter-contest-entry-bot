@@ -83,7 +83,7 @@ bash bot_entry.sh
 
 Windows:
 ```Bash:e.g. Windows
-bot_entry_win.ba
+bot_entry_win.bat
 ```
 
 このスクリプトは `tb_search_contests.py` (=懸賞ツイートの収集)、 `tb_enter_contests.py` (=応募=リツイート＆フォロー) と `tb_unfollow.py` (=アンフォロー) を繰り返し実行します。出力ファイルは `result` ディレクトリに移動されてマージされます。フォロー上限近くになるまではアンフォローは必要ないと思いますので、 `config/config.json` の `destroy_count` 項目の値を調整するか、 `tb_unfollow.py` の実行をコメントアウトします。
